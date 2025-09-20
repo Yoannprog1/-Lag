@@ -1,228 +1,507 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>$LAG — Don’t lag the pump</title>
-  <meta name="description" content="$LAG — Always late, always pumping. Transaction pending… 99%. Don’t lag the pump." />
-  <meta name="theme-color" content="#030712" />
-  <!-- Open Graph / Twitter -->
-  <meta property="og:title" content="$LAG — Don’t lag the pump" />
-  <meta property="og:description" content="Always late, always pumping. 99% loading…" />
-  <meta property="og:type" content="website" />
-  <meta property="og:image" content="/og.png" />
-  <meta property="og:url" content="https://lag-two.vercel.app/" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="$LAG — Don’t lag the pump" />
-  <meta name="twitter:description" content="Transaction pending… 99%. Don’t lag the pump. Buy $LAG." />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='52' x='6' font-size='56'%3E%E2%8F%B3%3C/text%3E%3C/svg%3E" />
-  <style>
-    :root{
-      --bg:#030712; --panel:#0A0F1A; --card:#0B111F; --line:#162033;
-      --fg:#E5E7EB; --mut:#9CA3AF; --acc:#38BDF8; --acc2:#22D3EE; --ok:#34D399; --warn:#FBBF24;
-      --ring: rgba(56,189,248,.28);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;background:
-      radial-gradient(1200px 800px at 10% -10%,rgba(56,189,248,.10),transparent 40%),
-      radial-gradient(1000px 600px at 110% 10%,rgba(34,211,238,.08),transparent 45%),
-      var(--bg);
-      color:var(--fg);
-      font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial;
-    }
-    a{color:var(--fg);text-decoration:none}
-    .wrap{max-width:1200px;margin:0 auto;padding:24px}
-    header{
-      position:sticky;top:0;z-index:50;backdrop-filter:saturate(140%) blur(8px);
-      background:linear-gradient(180deg,rgba(3,7,18,.65),rgba(3,7,18,.35)); border-bottom:1px solid var(--line)
-    }
-    header .inner{display:flex;gap:14px;align-items:center;justify-content:space-between;padding:12px 8px}
-    .brand{display:flex;gap:12px;align-items:center}
-    .logo{
-      width:44px;height:44px;display:grid;place-items:center;background:linear-gradient(180deg,#050A14,#0A0F1A);
-      border:1px solid var(--line);border-radius:14px;box-shadow:0 0 0 1px rgba(56,189,248,.12),0 10px 28px rgba(0,0,0,.45)
-    }
-    .logo svg{filter:drop-shadow(0 0 10px rgba(56,189,248,.5))}
-    .wordmark{font-weight:900;letter-spacing:.4px}
-    .chip{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;border:1px solid var(--line);background:#0B111F}
-    .hero{padding:64px 0 40px;display:grid;gap:22px}
-    @media(min-width:920px){.hero{grid-template-columns:1.2fr .8fr; align-items:center}}
-    h1{font-size:clamp(30px,6vw,62px);margin:0;line-height:1.05;letter-spacing:.2px}
-    .sub{color:var(--mut);font-size:clamp(14px,2.6vw,18px)}
-    .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:2px}
-    .btn{
-      padding:12px 16px;border-radius:14px;border:1px solid var(--line);background:linear-gradient(180deg,#0B111F,#0A0F1A);
-      color:#fff;font-weight:800;letter-spacing:.3px;cursor:pointer;transform:translateZ(0)
-    }
-    .btn:hover{box-shadow:0 0 0 3px var(--ring)}
-    .btn.acc{background:linear-gradient(180deg,#0EA5E9,#0284C7); border:none; box-shadow:0 16px 36px rgba(14,165,233,.35)}
-    .grid{display:grid; gap:18px}
-    .card{background:linear-gradient(180deg,#0B111F,#0A0F1A); border:1px solid var(--line); border-radius:18px; padding:18px}
-    .bar{height:18px;background:#0C1222;border:1px solid var(--line);border-radius:999px; position:relative; overflow:hidden}
-    .bar > i{position:absolute;inset:0; width:99%; background:linear-gradient(90deg, var(--acc), var(--acc2)); border-radius:999px; box-shadow:inset 0 0 22px rgba(255,255,255,.08); animation:pulseWidth 2.6s ease-in-out infinite}
-    @keyframes pulseWidth{0%{width:97%}50%{width:99%}100%{width:97%}}
-    .bar:after{content:"99%";position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#06202b;font-weight:900}
-    .glitch{position:relative}
-    .glitch:before,.glitch:after{content:attr(data-text);position:absolute;left:0;top:0;filter:blur(.2px)}
-    .glitch:before{transform:translateX(1.2px); color:#22d3ee; opacity:.6}
-    .glitch:after{transform:translateX(-1.2px); color:#60a5fa; opacity:.5}
-    h2{margin:0 0 10px;font-size:clamp(18px,4vw,28px)}
-    ul{margin:8px 0 0 18px; color:var(--mut)}
-    .cols{display:grid;gap:18px}
-    @media(min-width:860px){.cols{grid-template-columns:repeat(3,1fr)}}
-    .small{font-size:12px;color:#9aa3af}
-    .sep{height:1px;background:var(--line);margin:20px 0}
-    .kbd{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; background:#0c1117; border:1px solid var(--line); padding:6px 10px; border-radius:10px}
-    .addr{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .pill{padding:6px 10px;border:1px solid var(--line);border-radius:999px;color:var(--mut)}
-    .stat{display:grid;grid-template-columns:auto 1fr;gap:10px 14px;align-items:center}
-    .stat .k{color:var(--mut)}
-    footer{padding:34px 0;color:#9aa3af;font-size:14px}
-  </style>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "$LAG",
-    "url": "https://lag-two.vercel.app/",
-    "description": "Transaction pending… 99%. Meme token — Don’t lag the pump.",
-    "sameAs": ["https://x.com/LagLoader","https://t.me/Lag_Officiel"]
-  }
-  </script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>$LAG — Don’t lag the pump</title>
+<meta name="description" content="$LAG — Always late, always pumping. 99% loading… Don’t lag the pump." />
+<meta name="theme-color" content="#030712" />
+
+<style>
+:root{
+  --bg:#030712; --bg2:#0A0F1A; --card:#0B111F; --line:#162033;
+  --fg:#E5E7EB; --mut:#9CA3AF; --sub:#b6b6c2;
+  --acc:#38BDF8; --acc2:#22D3EE; --ok:#34D399; --warn:#FBBF24;
+  --ring: rgba(56,189,248,.28);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--fg);
+  font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial;
+  background: var(--bg);
+  overflow-x:hidden;
+}
+
+/* scroll progress bar */
+#progress{
+  position:fixed;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,#22d3ee,#38bdf8);
+  transform-origin:0 50%;transform:scaleX(0);z-index:100
+}
+
+/* background layers */
+.bg-aurora{
+  position:fixed; inset:-20% -10% auto -10%; height:60vh; z-index:0; pointer-events:none;
+  background: radial-gradient(30% 40% at 20% 10%, rgba(56,189,248,.20), transparent 60%),
+              radial-gradient(40% 40% at 80% 20%, rgba(34,211,238,.18), transparent 70%);
+  filter: blur(40px) saturate(130%); animation: floatY 12s ease-in-out infinite alternate;
+}
+@keyframes floatY{ from{transform:translateY(-10px)} to{transform:translateY(20px)} }
+
+/* morphing blob */
+.blob{
+  position:fixed; inset:auto -10% -20% auto; width:60vmax; height:60vmax; z-index:0; pointer-events:none;
+  background: radial-gradient(closest-side at 50% 50%, rgba(56,189,248,.25), transparent 60%);
+  filter: blur(40px) saturate(130%);
+  animation: blob 16s ease-in-out infinite;
+}
+@keyframes blob{
+  0%{ transform:translate(10%,0) scale(1) }
+  50%{ transform:translate(-10%,-6%) scale(1.15) }
+  100%{ transform:translate(10%,0) scale(1) }
+}
+
+/* noise film */
+.noise{
+  position:fixed; inset:-50px; pointer-events:none; z-index:0;
+  background-image: repeating-conic-gradient(rgba(255,255,255,.02) 0 15deg, transparent 0 30deg);
+  mix-blend-mode: soft-light; opacity:.35; filter: blur(.8px);
+}
+
+/* layout */
+.wrap{max-width:1200px; margin:0 auto; padding:24px; position:relative; z-index:1}
+header{
+  position:sticky; top:0; z-index:50;
+  backdrop-filter:saturate(140%) blur(8px);
+  background:linear-gradient(180deg,rgba(3,7,18,.65),rgba(3,7,18,.35));
+  border-bottom:1px solid var(--line);
+}
+.head{display:flex; align-items:center; justify-content:space-between; gap:14px; padding:12px 8px}
+.brand{display:flex; align-items:center; gap:12px}
+.logo{
+  width:44px; height:44px; display:grid; place-items:center;
+  background:linear-gradient(180deg,#050A14,#0A0F1A);
+  border:1px solid var(--line); border-radius:14px;
+  box-shadow:0 0 0 1px rgba(56,189,248,.12),0 10px 28px rgba(0,0,0,.45)
+}
+.logo svg{ filter:drop-shadow(0 0 10px rgba(56,189,248,.5)) }
+.wordmark{ font-weight:900; letter-spacing:.4px }
+.nav{display:flex; gap:10px; align-items:center}
+.lang a{ color:var(--mut); padding:6px 8px; border-radius:10px }
+.lang a.active{ color:#fff; font-weight:800; background:#0B111F; border:1px solid var(--line) }
+
+/* neon gradient button border */
+.btn{
+  --g: conic-gradient(from 180deg at 50% 50%, #22d3ee, #38bdf8, #22d3ee);
+  position:relative; isolation:isolate;
+  padding:12px 16px; border-radius:14px; border:1px solid var(--line);
+  background:linear-gradient(180deg,#0B111F,#0A0F1A); color:#fff; font-weight:800; letter-spacing:.3px; cursor:pointer;
+  transition:transform .15s ease;
+}
+.btn:before{
+  content:""; position:absolute; inset:-2px; z-index:-1; border-radius:16px;
+  background:var(--g); filter:blur(8px); opacity:0; transition:opacity .2s;
+}
+.btn:hover{ box-shadow:0 0 0 3px var(--ring); transform:translateY(-1px) }
+.btn:hover:before{ opacity:.9 }
+.btn.acc{ background:linear-gradient(180deg,#0EA5E9,#0284C7); border:none; box-shadow:0 16px 36px rgba(14,165,233,.35) }
+.btn.glow{ box-shadow:0 0 0 3px rgba(52,211,153,.25),0 0 20px rgba(52,211,153,.25) }
+
+.hero{ padding:64px 0 40px; display:grid; gap:22px }
+@media(min-width:920px){ .hero{ grid-template-columns:1.2fr .8fr; align-items:center } }
+h1{ font-size:clamp(30px,6vw,62px); margin:0; line-height:1.05; letter-spacing:.2px }
+
+/* title shine */
+.shine{
+  background:linear-gradient(90deg,#fff 0%,#9bdcff 25%,#fff 50%,#9bdcff 75%,#fff 100%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  background-size:200% 100%; animation:shine 4.5s linear infinite;
+}
+@keyframes shine{ 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+.sub{ color:var(--mut); font-size:clamp(14px,2.6vw,18px) }
+.cta{ display:flex; flex-wrap:wrap; gap:12px; margin-top:6px }
+
+.grid{ display:grid; gap:18px }
+.card{
+  background:linear-gradient(180deg,#0B111F,#0A0F1A); border:1px solid var(--line); border-radius:18px; padding:18px;
+  transform-style:preserve-3d; perspective:800px; transition:transform .2s ease, box-shadow .2s ease;
+}
+.card:hover{ transform:rotateX(1deg) rotateY(-1deg); box-shadow:0 10px 40px rgba(0,0,0,.35) }
+
+.bar{height:18px;background:#0C1222;border:1px solid var(--line);border-radius:999px; position:relative; overflow:hidden}
+.bar > i{
+  position:absolute; inset:0; width:99%; background:linear-gradient(90deg, var(--acc), var(--acc2)); border-radius:999px;
+  box-shadow:inset 0 0 22px rgba(255,255,255,.08); animation:pulseWidth 2.6s ease-in-out infinite
+}
+@keyframes pulseWidth{ 0%{width:97%} 50%{width:99%} 100%{width:97%} }
+.bar:after{content:"99%";position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#06202b;font-weight:900}
+
+/* glitch accent (kept subtle) */
+.glitch{ position:relative; display:inline-block }
+.glitch:before,.glitch:after{ content:attr(data-text); position:absolute; left:0; top:0; filter:blur(.2px) }
+.glitch:before{ transform:translateX(1.2px); color:#22d3ee; opacity:.45 }
+.glitch:after{ transform:translateX(-1.2px); color:#60a5fa; opacity:.35 }
+
+.chips{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:10px }
+.chip{ display:inline-flex; align-items:center; gap:8px; padding:8px 10px; border-radius:999px; border:1px solid var(--line); background:#0B111F }
+
+.stat{ display:grid; grid-template-columns:auto 1fr; gap:10px 14px; align-items:center }
+.stat .k{ color:var(--mut) }
+
+h2{ margin:0 0 10px; font-size:clamp(18px,4vw,28px) }
+ul{ margin:8px 0 0 18px; color:var(--mut) }
+.cols{ display:grid; gap:18px }
+@media(min-width:860px){ .cols{ grid-template-columns:repeat(3,1fr) } }
+.sep{ height:1px; background:var(--line); margin:20px 0 }
+.small{ font-size:12px; color:#9aa3af }
+
+/* accordion */
+.accordion .item{ border:1px solid var(--line); border-radius:14px; background:#0B111F; margin-bottom:10px }
+.accordion .head{ display:flex; justify-content:space-between; gap:12px; padding:12px 14px; cursor:pointer }
+.accordion .head:hover{ background:#0a1222 }
+.accordion .body{ display:none; padding:0 14px 14px 14px; color:var(--mut) }
+.accordion .item.open .body{ display:block }
+
+/* sticky CTA (mobile) */
+.sticky-cta{
+  position:fixed; left:0; right:0; bottom:0; display:flex; gap:10px; justify-content:center;
+  padding:10px; background:rgba(3,7,18,.82); backdrop-filter:blur(8px); border-top:1px solid var(--line); z-index:30
+}
+@media(min-width:860px){ .sticky-cta{ display:none } }
+
+/* toast & utils */
+.toast{
+  position:fixed; right:16px; bottom:90px; background:#111827; border:1px solid var(--line);
+  padding:10px 12px; border-radius:10px; opacity:0; transform:translateY(10px);
+  transition:.25s; pointer-events:none; z-index:31
+}
+.toast.show{ opacity:1; transform:translateY(0) }
+.hidden{ display:none }
+
+/* back to top */
+#topBtn{
+  position:fixed; right:16px; bottom:16px; z-index:32;
+  border:1px solid var(--line); background:#0B111F; color:#fff; border-radius:999px; padding:10px 14px; display:none
+}
+#topBtn.show{ display:block }
+
+/* particles canvas */
+#fx{ position:fixed; inset:0; z-index:2; pointer-events:none; mix-blend-mode:screen; opacity:.5 }
+</style>
 </head>
+
 <body>
-  <header>
-    <div class="inner wrap" role="navigation" aria-label="primary">
-      <div class="brand">
-        <div class="logo" aria-label="$LAG logo">
-          <!-- Hourglass with glitch bars -->
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M6 3h12v2c0 2-2 4-4 5h0c-2 1-2 3 0 4h0c2 1 4 3 4 5v2H6v-2c0-2 2-4 4-5h0c2-1 2-3 0-4h0C8 9 6 7 6 5V3z" stroke="white" stroke-width="1.6"/>
-            <rect x="2" y="7" width="7" height="1" fill="#22d3ee"/>
-            <rect x="10" y="12" width="9" height="1" fill="#38bdf8"/>
-            <rect x="5" y="17" width="6" height="1" fill="#22d3ee"/>
-          </svg>
-        </div>
-        <div>
-          <div class="wordmark">$LAG</div>
-          <div class="small">Always late, always pumping</div>
-        </div>
+<div id="progress"></div>
+<canvas id="fx"></canvas>
+<div class="bg-aurora"></div>
+<div class="blob"></div>
+<div class="noise"></div>
+
+<header>
+  <div class="wrap head">
+    <div class="brand">
+      <div class="logo" aria-label="$LAG logo">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M6 3h12v2c0 2-2 4-4 5h0c-2 1-2 3 0 4h0c2 1 4 3 4 5v2H6v-2c0-2 2-4 4-5h0c2-1 2-3 0-4h0C8 9 6 7 6 5V3z" stroke="white" stroke-width="1.6"/>
+          <rect x="2" y="7" width="7" height="1" fill="#22d3ee"/>
+          <rect x="10" y="12" width="9" height="1" fill="#38bdf8"/>
+          <rect x="5" y="17" width="6" height="1" fill="#22d3ee"/>
+        </svg>
       </div>
-      <div class="chip">
-        <span>Transaction pending…</span>
-        <strong>99%</strong>
+      <div>
+        <div class="wordmark">$LAG</div>
+        <div class="small">Always late, always pumping</div>
       </div>
     </div>
-  </header>
+    <nav class="nav">
+      <div class="lang">
+        <a href="#" data-lang="en" class="active">EN</a>
+        <a href="#" data-lang="fr">FR</a>
+      </div>
+    </nav>
+  </div>
+</header>
 
-  <main class="wrap">
-    <section class="hero grid">
-      <div>
-        <h1 class="glitch" data-text="Don’t lag the pump.">Don’t lag the pump.</h1>
-        <p class="sub">If you snooze, you lose — join <b>$LAG</b> now.</p>
-        <div class="cta" id="join">
-          <a class="btn acc" href="ADD_PUMPFUN_LINK" target="_blank" rel="noopener">Buy on PumpFun</a>
-          <a class="btn" href="https://x.com/LagLoader" target="_blank" rel="noopener">Follow on X</a>
-          <a class="btn" href="https://t.me/Lag_Officiel" target="_blank" rel="noopener">Join Telegram</a>
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <h1 class="glitch shine" data-text="Don’t lag the pump."><span data-i18n="h1">Don’t lag the pump.</span></h1>
+      <p class="sub" data-i18n="tagline">If you snooze, you lose — join <b>$LAG</b> now.</p>
+      <div class="cta" id="join">
+        <a class="btn acc magnet" id="buyBtn" href="ADD_PUMPFUN_LINK" target="_blank" rel="noopener" data-i18n="buy">Buy on PumpFun</a>
+        <a class="btn magnet" href="https://x.com/LagLoader" target="_blank" rel="noopener" data-i18n="x">Follow on X</a>
+        <a class="btn magnet" href="https://t.me/Lag_Officiel" target="_blank" rel="noopener" data-i18n="tg">Join Telegram</a>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <div class="bar" aria-hidden="true"><i></i></div>
+      </div>
+      <div class="chips">
+        <div class="chip">
+          <span data-i18n="countdownLabel">⏳ Launch countdown:</span>
+          <strong id="countdown">TBA</strong>
         </div>
-        <div class="card" style="margin-top:16px">
-          <div class="bar" aria-hidden="true"><i></i></div>
-        </div>
+        <div class="chip hidden" id="liveNow">🚀 <span data-i18n="live">LIVE NOW on PumpFun</span></div>
       </div>
+    </div>
 
-      <div class="card">
-        <h2>Quick Facts</h2>
-        <div class="stat">
-          <div class="k">Ticker</div><div><b>$LAG</b></div>
-          <div class="k">Chain</div><div><b>SOL / PumpFun</b></div>
-          <div class="k">Total Supply</div><div><b>1,000,000,000</b> (fair launch)</div>
-          <div class="k">Taxes</div><div><b>0 / 0</b></div>
-          <div class="k">Liquidity</div><div><b>Auto-created at launch • LP burned</b></div>
-        </div>
-        <div class="sep"></div>
-        <h2>Why $LAG?</h2>
-        <ul>
-          <li>Universal meme: nobody wants to be late to the pump.</li>
-          <li>Iconic branding: 99% loading + hourglass glitch.</li>
-          <li>Built for socials: bold visuals that read in 1s.</li>
-        </ul>
+    <div class="card reveal">
+      <h2 data-i18n="quickfacts">Quick Facts</h2>
+      <div class="stat">
+        <div class="k" data-i18n="ticker">Ticker</div><div><b>$LAG</b></div>
+        <div class="k" data-i18n="chain">Chain</div><div><b>SOL / PumpFun</b></div>
+        <div class="k" data-i18n="supply">Total Supply</div><div><b>1,000,000,000</b> <span data-i18n="fair">(fair launch)</span></div>
+        <div class="k" data-i18n="taxes">Taxes</div><div><b>0 / 0</b></div>
+        <div class="k" data-i18n="liquidity">Liquidity</div><div><b>Auto-created at launch • LP burned</b></div>
       </div>
-    </section>
+      <div class="sep"></div>
+      <h2 data-i18n="why">Why $LAG?</h2>
+      <ul>
+        <li data-i18n="why1">Universal meme: nobody wants to be late to the pump.</li>
+        <li data-i18n="why2">Iconic branding: 99% loading + hourglass glitch.</li>
+        <li data-i18n="why3">Built for socials: bold visuals that read in 1s.</li>
+      </ul>
+    </div>
+  </section>
 
-    <section class="cols">
-      <div class="card">
-        <h2>Contract</h2>
-        <div class="addr">
-          <span class="kbd" id="contract">TBA</span>
-          <button class="btn" id="copy" disabled>Copy</button>
-          <span class="pill">renounced: <b>TBA</b></span>
-        </div>
-        <p class="small">Contract address will be published here right after launch.</p>
-      </div>
-      <div class="card">
-        <h2>How to Buy</h2>
-        <ul>
-          <li>1) Open PumpFun and search for <b>$LAG</b> (or use the button above).</li>
-          <li>2) Connect wallet → test with a small buy first.</li>
-          <li>3) Scale your entry — don’t lag the pump.</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h2>Tokenomics</h2>
-        <ul>
-          <li><b>Fair Launch</b> — 100% supply via bonding curve on PumpFun.</li>
-          <li><b>No Team Allocation</b> — community-driven meme.</li>
-          <li><b>LP</b> — auto-created at launch, LP burned.</li>
-        </ul>
-      </div>
-    </section>
+  <section class="cols">
+    <div class="card reveal">
+      <h2 data-i18n="how">How to Buy</h2>
+      <ul>
+        <li data-i18n="how1">1) Open PumpFun and search for <b>$LAG</b> (or use the button above).</li>
+        <li data-i18n="how2">2) Connect wallet → test with a small buy first.</li>
+        <li data-i18n="how3">3) Scale your entry — don’t lag the pump.</li>
+      </ul>
+    </div>
 
-    <section class="cols">
-      <div class="card">
-        <h2>Roadmap</h2>
-        <ul>
-          <li>Phase 1 — Launch visuals, socials (X / TG), fair launch ✅</li>
-          <li>Phase 2 — Community quests, weekly meme drops</li>
-          <li>Phase 3 — Spaces & influencer raids</li>
-          <li>Phase 4 — CEX pitch if metrics hit</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h2>FAQ</h2>
-        <ul>
-          <li><b>Is this a meme?</b> Yes. No promises — only vibes.</li>
-          <li><b>Any taxes?</b> 0/0. Buy, sell, enjoy.</li>
-          <li><b>Safety?</b> LP burned. Contract renounce status: <em>TBA</em>.</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h2>Socials</h2>
-        <ul>
-          <li>X: <a href="https://x.com/LagLoader" target="_blank" rel="noopener">@LagLoader</a></li>
-          <li>Telegram: <a href="https://t.me/Lag_Officiel" target="_blank" rel="noopener">t.me/Lag_Officiel</a></li>
-          <li>Website: <a href="https://lag-two.vercel.app/" target="_blank" rel="noopener">lag-two.vercel.app</a></li>
-        </ul>
-      </div>
-    </section>
+    <div class="card reveal">
+      <h2 data-i18n="tokenomics">Tokenomics</h2>
+      <ul>
+        <li data-i18n="tok1"><b>Fair Launch</b> — 100% supply via bonding curve on PumpFun.</li>
+        <li data-i18n="tok2"><b>No Team Allocation</b> — community-driven meme.</li>
+        <li data-i18n="tok3"><b>LP</b> — auto-created at launch, LP burned.</li>
+      </ul>
+    </div>
 
-    <section class="card" style="margin-top:18px">
-      <h2>Share This</h2>
+    <div class="card reveal">
+      <h2 data-i18n="contract">Contract</h2>
+      <div class="chips" style="margin-bottom:8px">
+        <span class="chip">Address: <span class="small" id="contract">TBA_CONTRACT</span></span>
+        <button class="btn magnet" id="copy" disabled data-i18n="copy">Copy</button>
+      </div>
+      <ul>
+        <li>LP burn tx: <span class="small">TBA</span></li>
+        <li>Renounce tx: <span class="small">TBA</span></li>
+        <li>First buy tx: <span class="small">TBA</span></li>
+      </ul>
+      <p class="small" data-i18n="contractNote">Contract address will be published here right after launch.</p>
+    </div>
+  </section>
+
+  <section class="cols">
+    <div class="card reveal">
+      <h2 data-i18n="proofs">Proofs</h2>
+      <ul>
+        <li>0/0 fees ✅</li>
+        <li>LP burned 🔥</li>
+        <li>Community-driven 🤝</li>
+      </ul>
+    </div>
+
+    <div class="card reveal">
+      <h2 data-i18n="audit">Mini Audit</h2>
+      <ul>
+        <li>No mint functions</li>
+        <li>No team wallet</li>
+        <li>No blacklist</li>
+        <li>Renounce: <em>TBA</em></li>
+      </ul>
+    </div>
+
+    <div class="card reveal">
+      <h2 data-i18n="socials">Socials</h2>
+      <ul>
+        <li>X: <a href="https://x.com/LagLoader" target="_blank" rel="noopener">@LagLoader</a></li>
+        <li>Telegram: <a href="https://t.me/Lag_Officiel" target="_blank" rel="noopener">t.me/Lag_Officiel</a></li>
+        <li>Website: <a href="#" target="_blank" rel="noopener">soon</a></li>
+      </ul>
       <div class="cta">
-        <a class="btn" href="https://twitter.com/intent/tweet?text=Don%E2%80%99t%20lag%20the%20pump.%20Join%20%24LAG%20%E2%8F%B3%2099%25%20loading%E2%80%A6%0Ahttps%3A%2F%2Flag-two.vercel.app%2F" target="_blank" rel="noopener">Share on X</a>
-        <a class="btn" href="https://t.me/Lag_Officiel" target="_blank" rel="noopener">Join Telegram</a>
+        <a class="btn magnet" href="https://twitter.com/intent/tweet?text=Don%E2%80%99t%20lag%20the%20pump.%20Join%20%24LAG%20%E2%8F%B3%2099%25%20loading%E2%80%A6" target="_blank" rel="noopener" data-i18n="sharex">Share on X</a>
+        <a class="btn magnet" href="https://t.me/Lag_Officiel" target="_blank" rel="noopener" data-i18n="jointg">Join Telegram</a>
       </div>
-    </section>
-  </main>
+    </div>
+  </section>
 
-  <footer class="wrap">
+  <section class="card reveal">
+    <h2>Roadmap</h2>
+    <ul>
+      <li>Phase 1 — Launch visuals, socials (X / TG), fair launch ✅</li>
+      <li>Phase 2 — Community quests, weekly meme drops</li>
+      <li>Phase 3 — Spaces & influencer raids</li>
+      <li>Phase 4 — CEX pitch if metrics hit</li>
+    </ul>
+  </section>
+
+  <section class="card reveal">
+    <h2>FAQ</h2>
+    <div class="accordion" id="faq">
+      <div class="item"><div class="head"><span>Is this a meme?</span><span>+</span></div><div class="body">Yes — no promises, only vibes. Have fun, be safe.</div></div>
+      <div class="item"><div class="head"><span>Any taxes?</span><span>+</span></div><div class="body">0/0. Buy, sell, enjoy.</div></div>
+      <div class="item"><div class="head"><span>How will liquidity be handled?</span><span>+</span></div><div class="body">LP is auto-created at launch and burned. Tx proof will be linked here.</div></div>
+      <div class="item"><div class="head"><span>When CoinGecko?</span><span>+</span></div><div class="body">After initial volume on Raydium & proof links, we submit. Listing is not guaranteed.</div></div>
+    </div>
+  </section>
+
+  <footer>
     <div class="sep"></div>
     <div class="small">© <span id="yr"></span> $LAG. Meme project. No promises. Have fun, be safe.</div>
   </footer>
+</main>
 
-  <script>
-    document.getElementById('yr').textContent = new Date().getFullYear();
-  </script>
+<div class="sticky-cta">
+  <a class="btn acc magnet" id="buyBtnSticky" href="ADD_PUMPFUN_LINK" target="_blank" rel="noopener" data-i18n="buy">Buy on PumpFun</a>
+  <a class="btn magnet" href="https://t.me/Lag_Officiel" target="_blank" rel="noopener" data-i18n="tg">Join Telegram</a>
+</div>
+
+<div class="toast" id="toast">Copied!</div>
+<button id="topBtn" aria-label="Back to top">↑</button>
+
+<script>
+/* year */
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+/* scroll progress */
+const progress = document.getElementById('progress');
+window.addEventListener('scroll', () => {
+  const sc = document.documentElement.scrollTop || document.body.scrollTop;
+  const h  = (document.documentElement.scrollHeight - document.documentElement.clientHeight);
+  const p  = Math.max(0, Math.min(1, sc / h));
+  progress.style.transform = `scaleX(${p})`;
+});
+
+/* countdown (today 21:30 local) + confetti when live */
+const countdownEl = document.getElementById('countdown');
+const liveNowEl  = document.getElementById('liveNow');
+const buyA = document.getElementById('buyBtn');
+const buyB = document.getElementById('buyBtnSticky');
+const now  = new Date();
+const target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 21, 30, 0, 0).getTime();
+let liveFired = false;
+function setLive(){
+  if(liveFired) return;
+  liveFired = true;
+  countdownEl.parentElement.classList.add('hidden');
+  liveNowEl.classList.remove('hidden');
+  buyA.classList.add('glow'); buyB.classList.add('glow');
+  confetti(); // celebration
+}
+function tick(){
+  const t = Date.now();
+  if(t >= target){ setLive(); return; }
+  const diff = target - t;
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  countdownEl.textContent = `${d}d ${h}h ${m}m ${s}s`;
+  setTimeout(tick, 1000);
+}
+tick();
+
+/* accordion */
+document.querySelectorAll('.accordion .item .head').forEach(h=>{
+  h.addEventListener('click', ()=> h.parentElement.classList.toggle('open'));
+});
+
+/* copy contract */
+const copyBtn = document.getElementById('copy');
+const contractEl = document.getElementById('contract');
+const toast = document.getElementById('toast');
+function showToast(msg){ toast.textContent = msg; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'), 1400); }
+if(copyBtn){
+  copyBtn.addEventListener('click', async ()=>{
+    try { await navigator.clipboard.writeText(contractEl.textContent.trim()); showToast('Copied!'); }
+    catch(e){ showToast('Copy failed'); }
+  });
+}
+
+/* i18n */
+const i18n = {
+  en:{h1:"Don’t lag the pump.",tagline:"If you snooze, you lose — join <b>$LAG</b> now.",buy:"Buy on PumpFun",x:"Follow on X",tg:"Join Telegram",
+      countdownLabel:"⏳ Launch countdown:",live:"LIVE NOW on PumpFun",quickfacts:"Quick Facts",ticker:"Ticker",chain:"Chain",supply:"Total Supply",
+      fair:"(fair launch)",taxes:"Taxes",liquidity:"Liquidity",why:"Why $LAG?",why1:"Universal meme: nobody wants to be late to the pump.",
+      why2:"Iconic branding: 99% loading + hourglass glitch.",why3:"Built for socials: bold visuals that read in 1s.",
+      how:"How to Buy",how1:"1) Open PumpFun and search for <b>$LAG</b> (or use the button above).",how2:"2) Connect wallet → test with a small buy first.",
+      how3:"3) Scale your entry — don’t lag the pump.",tokenomics:"Tokenomics",tok1:"<b>Fair Launch</b> — 100% supply via bonding curve on PumpFun.",
+      tok2:"<b>No Team Allocation</b> — community-driven meme.",tok3:"<b>LP</b> — auto-created at launch, LP burned.",
+      proofs:"Proofs",audit:"Mini Audit",contract:"Contract",copy:"Copy",contractNote:"Contract address will be published here right after launch.",
+      sharex:"Share on X",jointg:"Join Telegram"},
+  fr:{h1:"Ne lag pas le pump.",tagline:"Si tu dors, tu perds — rejoins <b>$LAG</b> maintenant.",buy:"Acheter sur PumpFun",x:"Suivre sur X",tg:"Rejoindre Telegram",
+      countdownLabel:"⏳ Lancement dans :",live:"EN DIRECT sur PumpFun",quickfacts:"Infos clés",ticker:"Ticker",chain:"Réseau",supply:"Offre totale",
+      fair:"(fair launch)",taxes:"Taxes",liquidity:"Liquidité",why:"Pourquoi $LAG ?",why1:"Mème universel : personne ne veut rater le pump.",
+      why2:"Branding iconique : 99% loading + sablier glitch.",why3:"Pensé pour les réseaux : lisible en 1s.",
+      how:"Comment acheter",how1:"1) Ouvre PumpFun et cherche <b>$LAG</b> (ou le bouton ci-dessus).",how2:"2) Connecte le wallet → commence petit.",
+      how3:"3) Monte en puissance — ne lag pas le pump.",tokenomics:"Tokenomics",tok1:"<b>Fair Launch</b> — 100% de l’offre via la bonding curve PumpFun.",
+      tok2:"<b>Aucune allocation équipe</b> — mème mené par la communauté.",tok3:"<b>LP</b> — créée automatiquement au lancement, LP brûlée.",
+      proofs:"Preuves",audit:"Mini Audit",contract:"Contrat",copy:"Copier",contractNote:"L’adresse du contrat sera publiée ici juste après le lancement.",
+      sharex:"Partager sur X",jointg:"Rejoindre Telegram"}
+};
+function applyLang(lang){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.getAttribute('data-i18n'); const val = i18n[lang][key];
+    if(val) el.innerHTML = val;
+  });
+  document.querySelectorAll('.lang a').forEach(a=>a.classList.toggle('active', a.dataset.lang===lang));
+}
+document.querySelectorAll('.lang a').forEach(a=>a.addEventListener('click', e=>{e.preventDefault();applyLang(a.dataset.lang)}));
+applyLang('en');
+
+/* reveal on scroll */
+const io = new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target);} });},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>{ el.style.opacity=0; el.style.transform='translateY(12px)'; el.style.transition='opacity .5s ease, transform .5s ease'; io.observe(el); });
+
+/* back to top */
+const topBtn = document.getElementById('topBtn');
+window.addEventListener('scroll', ()=>{ if(window.scrollY>300) topBtn.classList.add('show'); else topBtn.classList.remove('show'); });
+topBtn.addEventListener('click', ()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+/* magnetic hover */
+document.querySelectorAll('.magnet').forEach(btn=>{
+  const strength = 18;
+  btn.addEventListener('mousemove', e=>{
+    const r = btn.getBoundingClientRect();
+    const x = ((e.clientX - r.left)/r.width - .5) * strength;
+    const y = ((e.clientY - r.top)/r.height - .5) * strength;
+    btn.style.transform = `translate(${x}px, ${y}px)`;
+  });
+  btn.addEventListener('mouseleave', ()=> btn.style.transform = '');
+});
+
+/* cursor particles (lightweight) */
+(function(){
+  const c=document.getElementById('fx'), ctx=c.getContext('2d'); let w,h; const P=[]; const max=40;
+  function resize(){ w= c.width = innerWidth; h= c.height = innerHeight; }
+  addEventListener('resize', resize); resize();
+  addEventListener('mousemove', e=>{
+    P.push({x:e.clientX,y:e.clientY,vx:(Math.random()-0.5)*1.4,vy:(Math.random()-0.5)*1.4,a:1,r:Math.random()*2+1});
+    if(P.length>max) P.shift();
+  });
+  function step(){
+    ctx.clearRect(0,0,w,h);
+    for(const p of P){
+      p.x+=p.vx; p.y+=p.vy; p.a*=0.96;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(56,189,248,${p.a})`; ctx.fill();
+    }
+    requestAnimationFrame(step);
+  }
+  step();
+})();
+
+/* confetti (super simple) */
+function confetti(){
+  const n=80; const els=[];
+  for(let i=0;i<n;i++){
+    const d=document.createElement('div');
+    d.style.position='fixed'; d.style.left=(Math.random()*100)+'vw'; d.style.top='-10px';
+    d.style.width='6px'; d.style.height='10px'; d.style.background=`hsl(${Math.random()*360},80%,60%)`;
+    d.style.transform=`rotate(${Math.random()*360}deg)`; d.style.zIndex=60; d.style.pointerEvents='none';
+    d.style.transition='transform 1s linear, top 1s linear, opacity .3s ease';
+    document.body.appendChild(d); els.push(d);
+    setTimeout(()=>{ d.style.top='110vh'; d.style.transform+=` translateY(${100+Math.random()*40}vh)`; }, 10);
+  }
+  setTimeout(()=>els.forEach(e=>e.remove()), 1200);
+}
+</script>
 </body>
 </html>
