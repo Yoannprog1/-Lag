@@ -4,64 +4,101 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>$LAG — Don’t lag the pump</title>
-  <meta name="description" content="$LAG — Always late, always pumping. Don’t lag the pump. Buy $LAG." />
+  <meta name="description" content="$LAG — Always late, always pumping. Transaction pending… 99%. Don’t lag the pump." />
+  <meta name="theme-color" content="#030712" />
   <!-- Open Graph / Twitter -->
   <meta property="og:title" content="$LAG — Don’t lag the pump" />
-  <meta property="og:description" content="$LAG — Always late, always pumping. 99% loading…" />
+  <meta property="og:description" content="Always late, always pumping. 99% loading…" />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="" />
+  <meta property="og:image" content="/og.png" />
+  <meta property="og:url" content="https://lag-two.vercel.app/" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="$LAG — Don’t lag the pump" />
   <meta name="twitter:description" content="Transaction pending… 99%. Don’t lag the pump. Buy $LAG." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='52' x='6' font-size='56'%3E%E2%8F%B3%3C/text%3E%3C/svg%3E" />
   <style>
     :root{
-      --bg:#0b0b0c; --fg:#f3f3f4; --sub:#b6b6c2; --acc:#38bdf8; --mut:#141418; --card:#111113; --glow:#0ea5e9;
+      --bg:#030712; --panel:#0A0F1A; --card:#0B111F; --line:#162033;
+      --fg:#E5E7EB; --mut:#9CA3AF; --acc:#38BDF8; --acc2:#22D3EE; --ok:#34D399; --warn:#FBBF24;
+      --ring: rgba(56,189,248,.28);
     }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{margin:0;font-family:ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji"; background:radial-gradient(1200px 800px at 10% -10%,rgba(56,189,248,.12),transparent 40%),radial-gradient(1200px 800px at 110% 10%,rgba(56,189,248,.10),transparent 40%),var(--bg); color:var(--fg);}
-    a{color:var(--fg); text-decoration:none}
-    .wrap{max-width:1080px;margin:0 auto;padding:24px}
-    header{display:flex; gap:16px; align-items:center; justify-content:space-between}
-    .brand{display:flex; gap:14px; align-items:center}
-    .logo{width:42px;height:42px;display:grid;place-items:center;background:#09090b;border:1px solid #1f2937;border-radius:12px;position:relative;box-shadow:0 0 0 1px rgba(56,189,248,.15),0 8px 28px rgba(0,0,0,.35)}
-    .logo svg{filter:drop-shadow(0 0 8px rgba(56,189,248,.5))}
-    .wordmark{font-weight:800;letter-spacing:.5px}
-    .tag{display:inline-flex;gap:6px;align-items:center;background:linear-gradient(180deg,#111113,#0c0c0e);border:1px solid #21212a;color:var(--sub);padding:8px 12px;border-radius:12px}
-    .tag small{opacity:.8}
-    .hero{padding:60px 0 34px;display:grid;gap:22px}
-    h1{font-size:clamp(28px,6vw,56px);margin:0;line-height:1.05}
-    .sub{color:var(--sub);font-size:clamp(14px,2.6vw,18px)}
-    .cta{display:flex;flex-wrap:wrap;gap:12px}
-    .btn{padding:12px 16px;border-radius:14px;border:1px solid #1f2937;background:linear-gradient(180deg,#101013,#0a0a0c);color:#fff;font-weight:700;letter-spacing:.3px}
-    .btn:hover{border-color:#334155;box-shadow:0 0 0 3px rgba(56,189,248,.18)}
-    .btn.acc{background:linear-gradient(180deg,#0ea5e9,#0284c7); border:none; box-shadow:0 12px 30px rgba(14,165,233,.35)}
+    body{
+      margin:0;background:
+      radial-gradient(1200px 800px at 10% -10%,rgba(56,189,248,.10),transparent 40%),
+      radial-gradient(1000px 600px at 110% 10%,rgba(34,211,238,.08),transparent 45%),
+      var(--bg);
+      color:var(--fg);
+      font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial;
+    }
+    a{color:var(--fg);text-decoration:none}
+    .wrap{max-width:1200px;margin:0 auto;padding:24px}
+    header{
+      position:sticky;top:0;z-index:50;backdrop-filter:saturate(140%) blur(8px);
+      background:linear-gradient(180deg,rgba(3,7,18,.65),rgba(3,7,18,.35)); border-bottom:1px solid var(--line)
+    }
+    header .inner{display:flex;gap:14px;align-items:center;justify-content:space-between;padding:12px 8px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{
+      width:44px;height:44px;display:grid;place-items:center;background:linear-gradient(180deg,#050A14,#0A0F1A);
+      border:1px solid var(--line);border-radius:14px;box-shadow:0 0 0 1px rgba(56,189,248,.12),0 10px 28px rgba(0,0,0,.45)
+    }
+    .logo svg{filter:drop-shadow(0 0 10px rgba(56,189,248,.5))}
+    .wordmark{font-weight:900;letter-spacing:.4px}
+    .chip{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;border:1px solid var(--line);background:#0B111F}
+    .hero{padding:64px 0 40px;display:grid;gap:22px}
+    @media(min-width:920px){.hero{grid-template-columns:1.2fr .8fr; align-items:center}}
+    h1{font-size:clamp(30px,6vw,62px);margin:0;line-height:1.05;letter-spacing:.2px}
+    .sub{color:var(--mut);font-size:clamp(14px,2.6vw,18px)}
+    .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:2px}
+    .btn{
+      padding:12px 16px;border-radius:14px;border:1px solid var(--line);background:linear-gradient(180deg,#0B111F,#0A0F1A);
+      color:#fff;font-weight:800;letter-spacing:.3px;cursor:pointer;transform:translateZ(0)
+    }
+    .btn:hover{box-shadow:0 0 0 3px var(--ring)}
+    .btn.acc{background:linear-gradient(180deg,#0EA5E9,#0284C7); border:none; box-shadow:0 16px 36px rgba(14,165,233,.35)}
     .grid{display:grid; gap:18px}
-    @media(min-width:820px){.grid{grid-template-columns:1.2fr .8fr; align-items:center}}
-    .card{background:linear-gradient(180deg,#0b0b0d,#0a0a0c); border:1px solid #1f2937; border-radius:16px; padding:18px}
-    .bar{height:18px;background:#0c1117;border:1px solid #1f2937;border-radius:999px; position:relative; overflow:hidden}
-    .bar > i{position:absolute;inset:0; width:99%; background:linear-gradient(90deg, rgba(56,189,248,.85), rgba(56,189,248,.65)); border-radius:999px; box-shadow:inset 0 0 22px rgba(255,255,255,.08)}
-    .bar:after{content:"99%";position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#06202b;font-weight:800}
+    .card{background:linear-gradient(180deg,#0B111F,#0A0F1A); border:1px solid var(--line); border-radius:18px; padding:18px}
+    .bar{height:18px;background:#0C1222;border:1px solid var(--line);border-radius:999px; position:relative; overflow:hidden}
+    .bar > i{position:absolute;inset:0; width:99%; background:linear-gradient(90deg, var(--acc), var(--acc2)); border-radius:999px; box-shadow:inset 0 0 22px rgba(255,255,255,.08); animation:pulseWidth 2.6s ease-in-out infinite}
+    @keyframes pulseWidth{0%{width:97%}50%{width:99%}100%{width:97%}}
+    .bar:after{content:"99%";position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#06202b;font-weight:900}
     .glitch{position:relative}
     .glitch:before,.glitch:after{content:attr(data-text);position:absolute;left:0;top:0;filter:blur(.2px)}
     .glitch:before{transform:translateX(1.2px); color:#22d3ee; opacity:.6}
     .glitch:after{transform:translateX(-1.2px); color:#60a5fa; opacity:.5}
-    section{padding:28px 0}
     h2{margin:0 0 10px;font-size:clamp(18px,4vw,28px)}
-    ul{margin:8px 0 0 18px; color:var(--sub)}
-    .cols{display:grid;gap:14px}
-    @media(min-width:700px){.cols{grid-template-columns:repeat(3,1fr)}}
-    footer{padding:30px 0;color:#9aa3af;font-size:14px}
+    ul{margin:8px 0 0 18px; color:var(--mut)}
+    .cols{display:grid;gap:18px}
+    @media(min-width:860px){.cols{grid-template-columns:repeat(3,1fr)}}
     .small{font-size:12px;color:#9aa3af}
-    .sep{height:1px;background:#1f2937;margin:20px 0}
+    .sep{height:1px;background:var(--line);margin:20px 0}
+    .kbd{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; background:#0c1117; border:1px solid var(--line); padding:6px 10px; border-radius:10px}
+    .addr{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .pill{padding:6px 10px;border:1px solid var(--line);border-radius:999px;color:var(--mut)}
+    .stat{display:grid;grid-template-columns:auto 1fr;gap:10px 14px;align-items:center}
+    .stat .k{color:var(--mut)}
+    footer{padding:34px 0;color:#9aa3af;font-size:14px}
   </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "$LAG",
+    "url": "https://lag-two.vercel.app/",
+    "description": "Transaction pending… 99%. Meme token — Don’t lag the pump.",
+    "sameAs": ["https://x.com/LagLoader","https://t.me/Lag_Officiel"]
+  }
+  </script>
 </head>
 <body>
-  <div class="wrap">
-    <header>
+  <header>
+    <div class="inner wrap" role="navigation" aria-label="primary">
       <div class="brand">
         <div class="logo" aria-label="$LAG logo">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <!-- Hourglass with glitch bars -->
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M6 3h12v2c0 2-2 4-4 5h0c-2 1-2 3 0 4h0c2 1 4 3 4 5v2H6v-2c0-2 2-4 4-5h0c2-1 2-3 0-4h0C8 9 6 7 6 5V3z" stroke="white" stroke-width="1.6"/>
             <rect x="2" y="7" width="7" height="1" fill="#22d3ee"/>
             <rect x="10" y="12" width="9" height="1" fill="#38bdf8"/>
@@ -73,77 +110,117 @@
           <div class="small">Always late, always pumping</div>
         </div>
       </div>
-      <a class="tag" href="#join" title="Join $LAG">
+      <div class="chip">
         <span>Transaction pending…</span>
-        <small>99%</small>
-      </a>
-    </header>
+        <strong>99%</strong>
+      </div>
+    </div>
+  </header>
 
-    <div class="hero grid">
+  <main class="wrap">
+    <section class="hero grid">
       <div>
         <h1 class="glitch" data-text="Don’t lag the pump.">Don’t lag the pump.</h1>
-        <p class="sub">Transaction pending… <strong>99%</strong>. If you snooze, you lose — join <b>$LAG</b> now.</p>
+        <p class="sub">If you snooze, you lose — join <b>$LAG</b> now.</p>
         <div class="cta" id="join">
-          <a class="btn acc" href="REPLACE_WITH_PUMPFUN_LINK" target="_blank" rel="noopener">Buy on PumpFun</a>
+          <a class="btn acc" href="ADD_PUMPFUN_LINK" target="_blank" rel="noopener">Buy on PumpFun</a>
           <a class="btn" href="https://x.com/LagLoader" target="_blank" rel="noopener">Follow on X</a>
-          <a class="btn" href="https://t.me/LAG_Official" target="_blank" rel="noopener">Join Telegram</a>
+          <a class="btn" href="https://t.me/Lag_Officiel" target="_blank" rel="noopener">Join Telegram</a>
         </div>
         <div class="card" style="margin-top:16px">
           <div class="bar" aria-hidden="true"><i></i></div>
         </div>
       </div>
+
       <div class="card">
-        <h2>Token quick facts</h2>
-        <ul>
-          <li><b>Ticker:</b> $LAG</li>
-          <li><b>Chain:</b> SOL / PUMPFUN</li>
-          <li><b>Total supply:</b> <em>REPLACE_SUPPLY</em></li>
-          <li><b>Liquidity:</b> <em>LOCKED / BURNED (specify)</em></li>
-          <li><b>Taxes:</b> 0/0</li>
-        </ul>
+        <h2>Quick Facts</h2>
+        <div class="stat">
+          <div class="k">Ticker</div><div><b>$LAG</b></div>
+          <div class="k">Chain</div><div><b>SOL / PumpFun</b></div>
+          <div class="k">Total Supply</div><div><b>1,000,000,000</b> (fair launch)</div>
+          <div class="k">Taxes</div><div><b>0 / 0</b></div>
+          <div class="k">Liquidity</div><div><b>Auto-created at launch • LP burned</b></div>
+        </div>
         <div class="sep"></div>
         <h2>Why $LAG?</h2>
         <ul>
-          <li>Universal meme: everyone hates being late to a pump.</li>
-          <li>Iconic branding: 99% / hourglass glitch.</li>
-          <li>Built for socials: ultra‑readable visuals in square format.</li>
+          <li>Universal meme: nobody wants to be late to the pump.</li>
+          <li>Iconic branding: 99% loading + hourglass glitch.</li>
+          <li>Built for socials: bold visuals that read in 1s.</li>
         </ul>
       </div>
-    </div>
+    </section>
+
+    <section class="cols">
+      <div class="card">
+        <h2>Contract</h2>
+        <div class="addr">
+          <span class="kbd" id="contract">TBA</span>
+          <button class="btn" id="copy" disabled>Copy</button>
+          <span class="pill">renounced: <b>TBA</b></span>
+        </div>
+        <p class="small">Contract address will be published here right after launch.</p>
+      </div>
+      <div class="card">
+        <h2>How to Buy</h2>
+        <ul>
+          <li>1) Open PumpFun and search for <b>$LAG</b> (or use the button above).</li>
+          <li>2) Connect wallet → test with a small buy first.</li>
+          <li>3) Scale your entry — don’t lag the pump.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Tokenomics</h2>
+        <ul>
+          <li><b>Fair Launch</b> — 100% supply via bonding curve on PumpFun.</li>
+          <li><b>No Team Allocation</b> — community-driven meme.</li>
+          <li><b>LP</b> — auto-created at launch, LP burned.</li>
+        </ul>
+      </div>
+    </section>
 
     <section class="cols">
       <div class="card">
         <h2>Roadmap</h2>
         <ul>
-          <li>Phase 1 — Launch visuals + socials (X / TG) ✅</li>
-          <li>Phase 2 — Community quests & weekly memes</li>
-          <li>Phase 3 — Influencer raids & spaces</li>
-          <li>Phase 4 — CEX pitch (if community > milestone)</li>
+          <li>Phase 1 — Launch visuals, socials (X / TG), fair launch ✅</li>
+          <li>Phase 2 — Community quests, weekly meme drops</li>
+          <li>Phase 3 — Spaces & influencer raids</li>
+          <li>Phase 4 — CEX pitch if metrics hit</li>
         </ul>
       </div>
       <div class="card">
-        <h2>How to buy</h2>
+        <h2>FAQ</h2>
         <ul>
-          <li>1. Go to PumpFun → search <b>$LAG</b>.</li>
-          <li>2. Connect wallet and buy small to test.</li>
-          <li>3. Don’t lag the pump — scale your entry.</li>
+          <li><b>Is this a meme?</b> Yes. No promises — only vibes.</li>
+          <li><b>Any taxes?</b> 0/0. Buy, sell, enjoy.</li>
+          <li><b>Safety?</b> LP burned. Contract renounce status: <em>TBA</em>.</li>
         </ul>
       </div>
       <div class="card">
-        <h2>Safety</h2>
+        <h2>Socials</h2>
         <ul>
-          <li>Contract renounced: <em>REPLACE_STATUS</em>.</li>
-          <li>Liquidity: <em>LOCKED / BURNED</em>.</li>
-          <li>No taxes, no BS. Community first.</li>
+          <li>X: <a href="https://x.com/LagLoader" target="_blank" rel="noopener">@LagLoader</a></li>
+          <li>Telegram: <a href="https://t.me/Lag_Officiel" target="_blank" rel="noopener">t.me/Lag_Officiel</a></li>
+          <li>Website: <a href="https://lag-two.vercel.app/" target="_blank" rel="noopener">lag-two.vercel.app</a></li>
         </ul>
       </div>
     </section>
 
-    <footer>
-      <div class="sep"></div>
-      <div class="small">© <span id="yr"></span> $LAG. Meme project. No promises. Have fun, be safe.</div>
-    </footer>
-  </div>
+    <section class="card" style="margin-top:18px">
+      <h2>Share This</h2>
+      <div class="cta">
+        <a class="btn" href="https://twitter.com/intent/tweet?text=Don%E2%80%99t%20lag%20the%20pump.%20Join%20%24LAG%20%E2%8F%B3%2099%25%20loading%E2%80%A6%0Ahttps%3A%2F%2Flag-two.vercel.app%2F" target="_blank" rel="noopener">Share on X</a>
+        <a class="btn" href="https://t.me/Lag_Officiel" target="_blank" rel="noopener">Join Telegram</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <div class="sep"></div>
+    <div class="small">© <span id="yr"></span> $LAG. Meme project. No promises. Have fun, be safe.</div>
+  </footer>
+
   <script>
     document.getElementById('yr').textContent = new Date().getFullYear();
   </script>
